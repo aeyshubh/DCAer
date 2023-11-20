@@ -60,6 +60,7 @@
     "@uniswap/v3-periphery": "^1.4.4",
     "dedent": "^1.5.1",
     "dotenv": "^16.0.3",
+    "node-cron": "^3.0.3",
     "viem": "^1.19.4"
   }
 }

@@ -2,11 +2,11 @@ import "@phala/pink-env";
 import { Coders } from "@phala/ethers";
 import { StringCoder } from "@phala/ethers/lib.commonjs/abi/coders";
 import { AddressCoder } from "@phala/ethers/lib.commonjs/abi/coders";
+import { ArrayCoder } from "@phala/ethers/lib.commonjs/abi/coders";
 import { METHODS } from "http";
-import { encodeAbiParameters, decodeAbiParameters } from 'viem'
+import { timeStamp } from "console";
 
 type HexString = `0x${string}`
-
 // eth abi coder
 const uintCoder = new Coders.NumberCoder(32, false, "uint256");
 const addressCoder = new Coders.AddressCoder("AddressCoder")
@@ -45,7 +45,6 @@ function errorToCode(error: Error): number {
       return 0;
   }
 }
-
 function fetchLensApiStats(): any {
  
   let headers = {
@@ -55,66 +54,90 @@ function fetchLensApiStats(): any {
   //
   // In Phat Function runtime, we not support async/await, you need use `pink.batchHttpRequest` to
   // send http request. The function will return an array of response.
-  //
-  let response1 = pink.httpRequest(
-      {
-        url:`https://dcaer-api-production.up.railway.app/api/products?walletAddress=0x82a7A0828fa8EB902f0508620Ee305b08634318A`,
-        method:"GET",
-        headers,
-        returnTextBody:true
-      }
-  );
- 
-  if (response1.statusCode !== 200) {
-    console.log(
-      `Fail to read Lens api with status code: ${response1.statusCode}, error: ${
-        response1
-      }}`
+  //[10 WA]
+  // Every Hour ->
+  const wa:string[] = ["0x82a7A0828fa8EB902f0508620Ee305b08634318A","0x82a7A0828fa8EB902f0508620Ee305b08634318A"];
+  for(let i=0;i<wa.length;i++){
+    if(i<=wa.length){
+      let response1 = pink.httpRequest(
+        {
+          url:`https://dcaer-api-production.up.railway.app/api/products?walletAddress=${wa[i]}`,
+          method:"GET",
+          headers,
+          returnTextBody:true
+        }
     );
-    throw Error.FailedToFetchData;
-  }
-  let respBody = response1.body;
-  let aa = [];
-  console.log(`The response body is ${respBody}`);
-aa.push(respBody);
-  //console.log("The response body is",respBody,"response body 2 is",resBody2);
-  //let atack1 = resBody2["data"].attack1
-  if (typeof respBody !== "string" && typeof respBody !== "string" ) {
-    throw Error.FailedToDecode;
-  }
-  return aa;
+   
+    if (response1.statusCode !== 200) {
+      console.log(
+        `Fail to read Lens api with status code: ${response1.statusCode}, error: ${
+          response1
+        }}`
+      );
+      throw Error.FailedToFetchData;
+    }
+    let respBody = response1.body;
+    let aa = [];
+    console.log(`The response body is ${respBody}`);
+  aa.push(respBody);
+    //console.log("The response body is",respBody,"response body 2 is",resBody2);
+    //let atack1 = resBody2["data"].attack1
+    if (typeof respBody !== "string" && typeof respBody !== "string" ) {
+      throw Error.FailedToDecode;
+    }
+    return aa;
+    }else{
+      valuesFinished =1;
+    }
+  
 }
-
+}
+let valuesFinished:number;
+// Duration : 1h:3600 Timestamp unit 
 
 export default function main(request: HexString): HexString {
  let requestId;
+ let time;
   try {
-    [requestId] = Coders.decode([uintCoder], request);
+    [requestId,time] = Coders.decode([uintCoder,uintCoder], request);
   } catch (error) {
     console.info("Malformed request received");
     return encodeReply([TYPE_ERROR,"Mal Value","Mal Value",0,"Mal Value"]);
   }
 
-  try {
-    const respData = fetchLensApiStats();
-    const resp1 = JSON.parse(respData[0])
-    //console.log("The response in the main is::",resp1);
-    // let stats = resp1.data.profile.stats.totalCollects+resp1.data.profile.stats.totalFollowers*100+resp1.data.profile.stats.totalFollowing*300+resp1.data.profile.stats.totalPosts*400;
-    let walletAddress:string = resp1.data[0].walletAddress;
-    let asset1:string = resp1.data[0].asset1;
-    let asset1Value:number = resp1.data[0].asset1Value;
-    let asset2:string = resp1.data[0].asset2;
-
-
+    ///-> FOr every user execute this fun
+    //100 -> 101 (101)
+      try {
+        let currentTime = Math.floor(Date.now() / 1000);
+        if(time <= currentTime ){
+      const respData = fetchLensApiStats();
+      const resp1 = JSON.parse(respData[0])
+      let walletAddress:string = resp1.data[0].walletAddress;
+      let asset1:string = resp1.data[0].asset1;
+      let asset1Value:number = resp1.data[0].asset1Value;
+      let asset2:string = resp1.data[0].asset2;
+  
+      //For last iteration
+  if(valuesFinished ==1){
+    console.log("response:", [3, walletAddress, asset1,asset1Value,asset2]);
+    valuesFinished = 0;
+    return encodeReply([3, walletAddress, asset1,asset1Value,asset2]);
+  }else{
     console.log("response:", [TYPE_RESPONSE, walletAddress, asset1,asset1Value,asset2]);
     return encodeReply([TYPE_RESPONSE, walletAddress, asset1,asset1Value,asset2]);
-  } catch (error) {
-    if (error === Error.FailedToFetchData) {
-      throw error;
-    } else {
-      // otherwise tell client we cannot process it
-      console.log("error:", [TYPE_ERROR, requestId, error]);
-      return encodeReply([TYPE_ERROR,"Mal Req","Mal Req",0,"Mal req"]);
-    }
   }
-}
+
+        }else{
+          console.log("Looping");
+          throw Error.FailedToFetchData;
+        }
+    } catch (error) {
+      if (error === Error.FailedToFetchData) {
+        throw error;
+      } else {
+        // otherwise tell client we cannot process it
+        console.log("error:", [TYPE_ERROR, requestId, error]);
+        return encodeReply([TYPE_ERROR,"Mal Req","Mal Req",0,"Mal req"]);
+      }
+    }
+    }
