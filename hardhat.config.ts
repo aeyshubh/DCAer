@@ -10,7 +10,7 @@ if (process.env.http_proxy || process.env.https_proxy) {
 }
 
 // If not set, it uses the hardhat account 0 private key.
-const DEPLOYER_PRIVATE_KEY ="PK";
+const DEPLOYER_PRIVATE_KEY ="1b4ef2764fb0b762512aca9558a76db21db34c80b549e782e4ef8018a831dce2";
 // Get a free POLYGONSCAN_API_KEY at https://polygonscan.com.
 const POLYGONSCAN_API_KEY = "NHSYWBD5ESFNKXSYN9KPEAVG5Y6YA5A8XV"
 const config: HardhatUserConfig = {

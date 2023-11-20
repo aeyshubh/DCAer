@@ -1,16 +1,20 @@
 import "@phala/pink-env";
 import { Coders } from "@phala/ethers";
 import { StringCoder } from "@phala/ethers/lib.commonjs/abi/coders";
+import { AddressCoder } from "@phala/ethers/lib.commonjs/abi/coders";
 import { METHODS } from "http";
+import { encodeAbiParameters, decodeAbiParameters } from 'viem'
+
 type HexString = `0x${string}`
 
 // eth abi coder
 const uintCoder = new Coders.NumberCoder(32, false, "uint256");
-const stringCoder = new Coders.StringCoder("string")
+const addressCoder = new Coders.AddressCoder("AddressCoder")
+
 const bytesCoder = new Coders.BytesCoder("bytes");
 
 function encodeReply(reply: [number, string, string,number, string]): HexString {
-  return Coders.encode([uintCoder, stringCoder, stringCoder,uintCoder, stringCoder], reply) as HexString;
+  return Coders.encode([uintCoder, addressCoder, addressCoder,uintCoder, addressCoder], reply) as HexString;
 }
 
 // Defined in TestLensOracle.sol
@@ -82,8 +86,8 @@ aa.push(respBody);
 }
 
 
-export default function main(request: HexString, settings: string): HexString {
- let requestId, encodedProfileId;
+export default function main(request: HexString): HexString {
+ let requestId;
   try {
     [requestId] = Coders.decode([uintCoder], request);
   } catch (error) {
