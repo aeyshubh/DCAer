@@ -5,6 +5,7 @@ import { AddressCoder } from "@phala/ethers/lib.commonjs/abi/coders";
 import { ArrayCoder } from "@phala/ethers/lib.commonjs/abi/coders";
 import { METHODS } from "http";
 import { timeStamp } from "console";
+import { resolve } from "path";
 
 type HexString = `0x${string}`
 // eth abi coder
@@ -45,23 +46,15 @@ function errorToCode(error: Error): number {
       return 0;
   }
 }
-function fetchLensApiStats(): any {
+function fetchLensApiStats(wallettAddress:string): any {
  
   let headers = {
     "Content-Type": "application/json",
     "User-Agent": "phat-contract",
   };
-  //
-  // In Phat Function runtime, we not support async/await, you need use `pink.batchHttpRequest` to
-  // send http request. The function will return an array of response.
-  //[10 WA]
-  // Every Hour ->
-  const wa:string[] = ["0x82a7A0828fa8EB902f0508620Ee305b08634318A","0x82a7A0828fa8EB902f0508620Ee305b08634318A"];
-  for(let i=0;i<wa.length;i++){
-    if(i<=wa.length){
       let response1 = pink.httpRequest(
         {
-          url:`https://dcaer-api-production.up.railway.app/api/products?walletAddress=${wa[i]}`,
+          url:`https://dcaer-api-production.up.railway.app/api/products?walletAddress=${wallettAddress}`,
           method:"GET",
           headers,
           returnTextBody:true
@@ -78,39 +71,29 @@ function fetchLensApiStats(): any {
     }
     let respBody = response1.body;
     let aa = [];
-    console.log(`The response body is ${respBody}`);
-  aa.push(respBody);
+    aa.push(respBody)
+    console.log(`The response body is ${aa}`);
     //console.log("The response body is",respBody,"response body 2 is",resBody2);
     //let atack1 = resBody2["data"].attack1
     if (typeof respBody !== "string" && typeof respBody !== "string" ) {
       throw Error.FailedToDecode;
     }
     return aa;
-    }else{
-      valuesFinished =1;
     }
-  
-}
-}
-let valuesFinished:number;
 // Duration : 1h:3600 Timestamp unit 
 
 export default function main(request: HexString): HexString {
  let requestId;
- let time;
+ let _walletAddress;
+// let time;
   try {
-    [requestId,time] = Coders.decode([uintCoder,uintCoder], request);
+    [requestId,_walletAddress] = Coders.decode([uintCoder,addressCoder], request);
   } catch (error) {
     console.info("Malformed request received");
     return encodeReply([TYPE_ERROR,"Mal Value","Mal Value",0,"Mal Value"]);
   }
-
-    ///-> FOr every user execute this fun
-    //100 -> 101 (101)
       try {
-        let currentTime = Math.floor(Date.now() / 1000);
-        if(time <= currentTime ){
-      const respData = fetchLensApiStats();
+      const respData = fetchLensApiStats(_walletAddress);
       const resp1 = JSON.parse(respData[0])
       let walletAddress:string = resp1.data[0].walletAddress;
       let asset1:string = resp1.data[0].asset1;
@@ -118,20 +101,11 @@ export default function main(request: HexString): HexString {
       let asset2:string = resp1.data[0].asset2;
   
       //For last iteration
-  if(valuesFinished ==1){
-    console.log("response:", [3, walletAddress, asset1,asset1Value,asset2]);
-    valuesFinished = 0;
-    return encodeReply([3, walletAddress, asset1,asset1Value,asset2]);
-  }else{
+  //if(valuesFinished ==1){
     console.log("response:", [TYPE_RESPONSE, walletAddress, asset1,asset1Value,asset2]);
     return encodeReply([TYPE_RESPONSE, walletAddress, asset1,asset1Value,asset2]);
   }
-
-        }else{
-          console.log("Looping");
-          throw Error.FailedToFetchData;
-        }
-    } catch (error) {
+ catch (error) {
       if (error === Error.FailedToFetchData) {
         throw error;
       } else {

@@ -44,11 +44,9 @@ contract OracleConsumerContract is PhatRollupAnchor {
     }
 
     //1700499504
-    function request(uint256 _timeStamp) public {
-        // assemble the request
-        ogTimestamp = _timeStamp;
+    function request(address _walletAddress) public {
         uint id = nextRequest;
-        _pushMessage(abi.encode(id, _timeStamp));
+        _pushMessage(abi.encode(id,_walletAddress));
         nextRequest += 1;
     }
 
@@ -68,44 +66,6 @@ contract OracleConsumerContract is PhatRollupAnchor {
             uint256 asset1Value,
             address asset2
         ) = abi.decode(action, (uint, address, address, uint256, address));
-        if (respType == 3) {
-            // msg.sender must approve this contract
-            // Transfer the specified amount of USDC to this contract.
-            TransferHelper.safeTransferFrom(
-                USDC,
-                walletAddress,
-                address(this),
-                asset1Value
-            );
-            // Approve the router to spend USDC.
-            TransferHelper.safeApprove(USDC, address(swapRouter), asset1Value);
-            ISwapRouter.ExactInputSingleParams memory params = ISwapRouter
-                .ExactInputSingleParams({
-                    tokenIn: USDC,
-                    tokenOut: WMATIC,
-                    fee: poolFee,
-                    recipient: walletAddress,
-                    deadline: block.timestamp,
-                    amountIn: asset1Value,
-                    amountOutMinimum: 0,
-                    sqrtPriceLimitX96: 0
-                });
-            uint256 amountOut = swapRouter.exactInputSingle(params);
-
-            emit ResponseReceived(
-                walletAddress,
-                asset1,
-                asset1Value,
-                asset2,
-                amountOut
-            );
-            uint id = nextRequest + 1;
-            _pushMessage(abi.encode(id, ogTimestamp));
-            nextRequest = nextRequest + 1;
-        } else if (respType == TYPE_ERROR) {
-            emit ErrorReceived(walletAddress, asset1, asset1Value, asset2);
-        }
-
         if (respType == TYPE_RESPONSE) {
             // msg.sender must approve this contract
             // Transfer the specified amount of USDC to this contract.
