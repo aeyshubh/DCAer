@@ -95,7 +95,7 @@ export default function main(request: HexString): HexString {
   
       //For last iteration
   //if(valuesFinished ==1){
-    //console.log("response:", [TYPE_RESPONSE, walletAddress, asset1,asset1Value,asset2]);
+    console.log("response:", [TYPE_RESPONSE, walletAddress, asset1,asset1Value,asset2]);
     return encodeReply([TYPE_RESPONSE, walletAddress, asset1,asset1Value,asset2]);
   }
  catch (error) {

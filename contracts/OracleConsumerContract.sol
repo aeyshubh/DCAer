@@ -16,6 +16,12 @@ contract OracleConsumerContract is PhatRollupAnchor {
         address asset2,
         uint256 amountOut
     );
+        event ResponseReceived2(address walletAddress,
+        address asset1,
+        uint256 asset1Value,
+        address asset2,
+        uint256 amountOut);
+    event test(string message);
     event ErrorReceived(
         uint256 error,
         address walletAddress,
@@ -61,27 +67,30 @@ contract OracleConsumerContract is PhatRollupAnchor {
     function _onMessageReceived(bytes calldata action) internal override {
         (
             uint respType,
-            address walletAddress,
+            address _walletAddress,
             address asset1,
             uint256 asset1Value,
             address asset2
         ) = abi.decode(action, (uint, address, address, uint256, address));
         if (respType == TYPE_RESPONSE) {
+                emit ResponseReceived2(_walletAddress,asset1,asset1Value,asset2,0);
             // msg.sender must approve this contract
             // Transfer the specified amount of USDC to this contract.
             TransferHelper.safeTransferFrom(
                 USDC,
-                walletAddress,
+                _walletAddress,
                 address(this),
                 asset1Value
             );
+                emit test("Transfer Done");
             // Approve the router to spend USDC.
-            TransferHelper.safeApprove(USDC, address(swapRouter), asset1Value);
+            TransferHelper.safeApprove(USDC, 0xE592427A0AEce92De3Edee1F18E0157C05861564, asset1Value);
+            emit test("Approve Done");
             ISwapRouter.ExactInputSingleParams memory params = ISwapRouter.ExactInputSingleParams({
                     tokenIn: USDC,
                     tokenOut: WMATIC,
                     fee: poolFee,
-                    recipient: walletAddress,
+                    recipient: _walletAddress,
                     deadline: block.timestamp,
                     amountIn: asset1Value,
                     amountOutMinimum: 0,
@@ -89,14 +98,14 @@ contract OracleConsumerContract is PhatRollupAnchor {
                 });
             uint256 amountOut = swapRouter.exactInputSingle(params);
             emit ResponseReceived(
-                walletAddress,
+                _walletAddress,
                 asset1,
                 asset1Value,
                 asset2,
                 amountOut
             );
         } else if (respType == TYPE_ERROR) {
-            emit ErrorReceived(TYPE_ERROR,walletAddress, asset1, asset1Value, asset2);
+            emit ErrorReceived(TYPE_ERROR,_walletAddress, asset1, asset1Value, asset2);
         }
     }
 }
