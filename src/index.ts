@@ -1,18 +1,11 @@
 import "@phala/pink-env";
 import { Coders } from "@phala/ethers";
-import { StringCoder } from "@phala/ethers/lib.commonjs/abi/coders";
-import { AddressCoder } from "@phala/ethers/lib.commonjs/abi/coders";
-import { ArrayCoder } from "@phala/ethers/lib.commonjs/abi/coders";
-import { METHODS } from "http";
-import { timeStamp } from "console";
-import { resolve } from "path";
+
 
 type HexString = `0x${string}`
 // eth abi coder
 const uintCoder = new Coders.NumberCoder(32, false, "uint256");
 const addressCoder = new Coders.AddressCoder("AddressCoder")
-
-const bytesCoder = new Coders.BytesCoder("bytes");
 
 function encodeReply(reply: [number, string, string,number, string]): HexString {
   return Coders.encode([uintCoder, addressCoder, addressCoder,uintCoder, addressCoder], reply) as HexString;
@@ -73,8 +66,6 @@ function fetchLensApiStats(wallettAddress:string): any {
     let aa = [];
     aa.push(respBody)
     console.log(`The response body is ${aa}`);
-    //console.log("The response body is",respBody,"response body 2 is",resBody2);
-    //let atack1 = resBody2["data"].attack1
     if (typeof respBody !== "string" && typeof respBody !== "string" ) {
       throw Error.FailedToDecode;
     }
@@ -95,6 +86,8 @@ export default function main(request: HexString): HexString {
       try {
       const respData = fetchLensApiStats(_walletAddress);
       const resp1 = JSON.parse(respData[0])
+      console.log(`For ID ${requestId}, Data fetched is ${JSON.stringify(resp1.data[0])}`);
+      console.log("Trial-2")
       let walletAddress:string = resp1.data[0].walletAddress;
       let asset1:string = resp1.data[0].asset1;
       let asset1Value:number = resp1.data[0].asset1Value;
@@ -102,7 +95,7 @@ export default function main(request: HexString): HexString {
   
       //For last iteration
   //if(valuesFinished ==1){
-    console.log("response:", [TYPE_RESPONSE, walletAddress, asset1,asset1Value,asset2]);
+    //console.log("response:", [TYPE_RESPONSE, walletAddress, asset1,asset1Value,asset2]);
     return encodeReply([TYPE_RESPONSE, walletAddress, asset1,asset1Value,asset2]);
   }
  catch (error) {
@@ -110,7 +103,7 @@ export default function main(request: HexString): HexString {
         throw error;
       } else {
         // otherwise tell client we cannot process it
-        console.log("error:", [TYPE_ERROR, requestId, error]);
+        console.log("error at 106 :", [TYPE_ERROR, requestId, error]);
         return encodeReply([TYPE_ERROR,"Mal Req","Mal Req",0,"Mal req"]);
       }
     }

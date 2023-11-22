@@ -17,6 +17,7 @@ contract OracleConsumerContract is PhatRollupAnchor {
         uint256 amountOut
     );
     event ErrorReceived(
+        uint256 error,
         address walletAddress,
         address asset1,
         uint256 asset1Value,
@@ -28,7 +29,6 @@ contract OracleConsumerContract is PhatRollupAnchor {
     uint constant TYPE_ERROR = 2;
     address public constant USDC = 0x0FA8781a83E46826621b3BC094Ea2A0212e71B23;
     address public constant WMATIC = 0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889;
-    uint ogTimestamp;
     // For this example, we will set the pool fee to 0.3%.
     uint24 public constant poolFee = 3000;
     mapping(uint => string) requests;
@@ -77,8 +77,7 @@ contract OracleConsumerContract is PhatRollupAnchor {
             );
             // Approve the router to spend USDC.
             TransferHelper.safeApprove(USDC, address(swapRouter), asset1Value);
-            ISwapRouter.ExactInputSingleParams memory params = ISwapRouter
-                .ExactInputSingleParams({
+            ISwapRouter.ExactInputSingleParams memory params = ISwapRouter.ExactInputSingleParams({
                     tokenIn: USDC,
                     tokenOut: WMATIC,
                     fee: poolFee,
@@ -97,7 +96,7 @@ contract OracleConsumerContract is PhatRollupAnchor {
                 amountOut
             );
         } else if (respType == TYPE_ERROR) {
-            emit ErrorReceived(walletAddress, asset1, asset1Value, asset2);
+            emit ErrorReceived(TYPE_ERROR,walletAddress, asset1, asset1Value, asset2);
         }
     }
 }
