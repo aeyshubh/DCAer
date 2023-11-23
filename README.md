@@ -1,6 +1,6 @@
 # DCAer ~ A Dapp which Dollor Cost Average Tokens with just one Click and with On-Chain Notifications.
 ## The Project is Deployed on **Phala and Polygon Mainnet**. 
-![DCA Frontend](https://github.com/aeyshubh/DCAer-Ph-1/assets/50445649/39e1a233-255f-44ce-8bb9-c4f418477f29)
+![D1](https://github.com/aeyshubh/DCAer/assets/50445649/e6324549-3be0-4db5-b68a-29353d0955aa)
 
 - Polygon Consumer COntract : https://polygonscan.com/address/0x17121eB13DFA6B6575e8b4E6b4Eb5b47AE2F5A5F#writeContract
 - Push Staging Channel : https://staging.push.org/channels?channel=0x82a7A0828fa8EB902f0508620Ee305b08634318A
@@ -19,14 +19,13 @@
     - Token 1(USDC) and Token 2(PHALA) to Swap
     - Total Value of Token 1 to swap in multiple x Durations .
     - Duration at which DCA Action needs to be take.
-  - ![image](https://github.com/aeyshubh/DCAer-Ph-1/assets/50445649/e15e6897-2303-4086-8b57-c87c49a78c6f)
+  - ![D2](https://github.com/aeyshubh/DCAer/assets/50445649/42606f85-2a8b-4caf-9b05-841104f02d43)
   - **Phat Functions** are used to fetch User's data from the API with a Wallet Address .
   - This **Data** is then sent to **Consumer contract** through **Phala's Phat Function**.
-  - ![image](https://github.com/aeyshubh/DCAer/assets/50445649/020e82e9-5380-4c39-8026-74b410393dbf)
-
+  - ![D3](https://github.com/aeyshubh/DCAer/assets/50445649/0f862546-2905-4e2c-bb64-b1de1384f24f)
   - The **receiving Side** of the consumer smart contract will **perform the Swap** with the Specified data.
   - After the **swap**, an **On-Chain Push Notification** will be sent to the **user's Wallet ** so that he/she is Notified about the **DCA Action**, after every Swap.
-  - ![DCAer Notification ](https://github.com/aeyshubh/DCAer/assets/50445649/8355235e-13d2-4950-bdc2-4ce3d9baeec8)
+  - ![D4](https://github.com/aeyshubh/DCAer/assets/50445649/19c1340d-28e4-4c0d-ba1d-5c18cb24cbf7)
   - This process will continue till the **Allowance** of Token 1 becomes 0 for the consumer Contract.
   - User can repeat the same process by just **increasing the Allowance** of Token 1.
  
