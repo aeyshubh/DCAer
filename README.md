@@ -2,7 +2,7 @@
 ## The Project is Deployed on **Phala and Polygon Mainnet**. 
 ![D1](https://github.com/aeyshubh/DCAer/assets/50445649/e6324549-3be0-4db5-b68a-29353d0955aa)
 
-- Polygon Consumer COntract : https://polygonscan.com/address/0x17121eB13DFA6B6575e8b4E6b4Eb5b47AE2F5A5F#writeContract
+- Polygon Consumer COntract : https://polygonscan.com/address/0x9a3cf3A5Bc231cC7Ba66fE9827fAa2ea099b8fCc#writeContract
 - Push Staging Channel : https://staging.push.org/channels?channel=0x82a7A0828fa8EB902f0508620Ee305b08634318A
 ## DCAer :
 - ### User Story : **I want to invest 10$ daily in x token but I don't have time to perform swaps daily as it's Boring....**
