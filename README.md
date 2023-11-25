@@ -4,7 +4,8 @@
 
 - Polygon Consumer COntract : https://polygonscan.com/address/0x9a3cf3A5Bc231cC7Ba66fE9827fAa2ea099b8fCc#writeContract
 - ![image](https://github.com/aeyshubh/DCAer/assets/50445649/6262e1ed-1c32-40b1-a9d3-08a3eca341c4)
-
+- Attestor Address :0x529b3da3079d13cb1d07d85b0fcdbd3ca80639f1
+- Phala Mainnet Brics Profile : https://bricks.phala.network/workflows/0x5cf13e08a2848b48d224d5b0dbe404972ac3f7f153db5a04038bceb45473bc78/0
 - Push Staging Channel : https://staging.push.org/channels?channel=0x82a7A0828fa8EB902f0508620Ee305b08634318A
 ## DCAer :
 - ### User Story : **I want to invest 10$ daily in x token but I don't have time to perform swaps daily as it's Boring....**
